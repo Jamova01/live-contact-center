@@ -18,7 +18,7 @@ type StoreState = {
   fetchClients: () => Promise<void>;
 };
 
-export const useStore = create<StoreState>((set, get) => ({
+export const useStore = create<StoreState>((set) => ({
   agents: [],
   clients: [],
   isLoadingAgents: false,
@@ -45,6 +45,7 @@ export const useStore = create<StoreState>((set, get) => ({
       const agents = await getAgents();
       set({ agents, isLoadingAgents: false });
     } catch (error) {
+      console.error("Error fetching agents:", error);
       set({ errorAgents: "Failed to load agents", isLoadingAgents: false });
     }
   },
@@ -54,6 +55,7 @@ export const useStore = create<StoreState>((set, get) => ({
       const clients = await getClients();
       set({ clients, isLoadingClients: false });
     } catch (error) {
+      console.error("Error fetching clients:", error);
       set({ errorClients: "Failed to load clients", isLoadingClients: false });
     }
   },
