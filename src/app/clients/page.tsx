@@ -1,24 +1,47 @@
 "use client";
-import { useEffect, useMemo } from "react";
+
+import { Suspense, useEffect, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { List } from "@/components/organisms/List";
 import { ClientCard } from "@/components/molecules/ClientCard";
 import { useStore } from "@/store/useStore";
+import { Client } from "@/types/types";
 
 export default function ClientsPage() {
   const { clients, isLoadingClients, errorClients, fetchClients } = useStore();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-
-  const waitTimeFilter = searchParams.get("waitTime") || "";
 
   useEffect(() => {
     if (clients.length === 0) {
       fetchClients();
     }
   }, [clients, fetchClients]);
+
+  if (isLoadingClients) {
+    return <div>Loading clients...</div>;
+  }
+
+  if (errorClients) {
+    return <div>{errorClients}</div>;
+  }
+
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <ClientsContent clients={clients} />
+    </Suspense>
+  );
+}
+
+interface ClientsContentProps {
+  clients: Client[];
+}
+
+function ClientsContent({ clients }: ClientsContentProps) {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const waitTimeFilter = searchParams.get("waitTime") || "";
 
   const filteredClients = useMemo(() => {
     return waitTimeFilter
@@ -38,14 +61,6 @@ export default function ClientsPage() {
     }
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
-
-  if (isLoadingClients) {
-    return <div>Loading clients...</div>;
-  }
-
-  if (errorClients) {
-    return <div>{errorClients}</div>;
-  }
 
   return (
     <div className="p-6">
