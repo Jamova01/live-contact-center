@@ -1,22 +1,31 @@
 # Agents & Clients Management Dashboard
 
 ## Project Overview
+
 This project is a web application built with Next.js, Zustand for state management, and API routes to manage agents and clients. It provides filtering functionality, real-time data updates, and a simple UI for managing agents and clients.
 
 ## Features
+
 - Display a list of agents and clients.
 - Filter agents based on their status.
 - Fetch agents and clients from the API.
 - Update agent status and client wait times.
 - Zustand-based global state management.
 
+## Deployment
+
+You can access the live application at the following link:
+🔗 Live Demo: https://live-contact-center.netlify.app/
+
 ## Installation
 
 ### Prerequisites
+
 - Node.js (>= 14.x)
 - npm or yarn
 
 ### Setup
+
 1. Clone the repository:
    ```sh
    git clone <repository_url>
@@ -36,6 +45,7 @@ This project is a web application built with Next.js, Zustand for state manageme
    ```
 
 ## Project Structure
+
 ```
 src/
   ├── app/
@@ -61,10 +71,13 @@ src/
 ```
 
 ## API Endpoints
+
 ### `GET /api/agents`
+
 Returns a list of available agents.
 
 **Response:**
+
 ```json
 [
   { "id": 1, "name": "Carlos López", "status": "available", "waitTime": 0 },
@@ -73,9 +86,11 @@ Returns a list of available agents.
 ```
 
 ### `GET /api/clients`
+
 Returns a list of available clients.
 
 **Response:**
+
 ```json
 [
   { "id": 1, "name": "Client A", "waitTime": 3 },
@@ -84,11 +99,12 @@ Returns a list of available clients.
 ```
 
 ## Technologies Used
+
 - **Next.js** - Framework for React applications
 - **Zustand** - State management
 - **Tailwind CSS** - Styling
 - **TypeScript** - Type safety
 
 ## License
-This project is licensed under the MIT License.
 
+This project is licensed under the MIT License.
