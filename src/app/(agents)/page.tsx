@@ -1,29 +1,47 @@
 "use client";
-import { useEffect, useMemo } from "react";
+
+import { Suspense, useEffect, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { List } from "@/components/organisms/List";
 import { AgentCard } from "@/components/molecules/AgentCard";
 import { useStore } from "@/store/useStore";
+import { Agent } from "@/types/types";
 
 export default function AgentsPage() {
-  const {
-    agents,
-    isLoadingAgents,
-    errorAgents,
-    fetchAgents,
-  } = useStore();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-
-  const statusFilter = searchParams.get("status") || "";
+  const { agents, isLoadingAgents, errorAgents, fetchAgents } = useStore();
 
   useEffect(() => {
     if (agents.length === 0) {
       fetchAgents();
     }
   }, [agents, fetchAgents]);
+
+  if (isLoadingAgents) {
+    return <div>Loading agents...</div>;
+  }
+
+  if (errorAgents) {
+    return <div>{errorAgents}</div>;
+  }
+
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <AgentsContent agents={agents} />
+    </Suspense>
+  );
+}
+
+interface AgentsContentProps {
+  agents: Agent[];
+}
+
+function AgentsContent({ agents }: AgentsContentProps) {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const statusFilter = searchParams.get("status") || "";
 
   const filteredAgents = useMemo(() => {
     return statusFilter
@@ -39,16 +57,8 @@ export default function AgentsPage() {
     } else {
       params.delete("status");
     }
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
-
-  if (isLoadingAgents) {
-    return <div>Loading agents...</div>;
-  }
-
-  if (errorAgents) {
-    return <div>{errorAgents}</div>;
-  }
 
   return (
     <div className="p-6">
