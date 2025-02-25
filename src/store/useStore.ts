@@ -21,7 +21,7 @@ type StoreState = {
   fetchClients: () => Promise<void>;
 };
 
-export const useStore = create<StoreState>((set, get) => ({
+export const useStore = create<StoreState>((set) => ({
   agents: [],
   clients: [],
   isLoadingAgents: false,

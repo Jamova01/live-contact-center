@@ -1,13 +1,22 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Server } from "socket.io";
+import { Server as NetServer } from "http";
+import { Socket as NetSocket } from "net";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+interface CustomSocketResponse extends NextApiResponse {
+  socket: NetSocket & { server: NetServer & { io?: Server } };
+}
+
+export default function handler(
+  req: NextApiRequest,
+  res: CustomSocketResponse
+) {
   if (!res.socket) {
     res.status(500).json({ error: "Socket is not available" });
     return;
   }
 
-  const httpServer = (res.socket as any).server;
+  const httpServer = res.socket.server;
 
   if (!httpServer.io) {
     console.log("Initializing Socket.io server...");

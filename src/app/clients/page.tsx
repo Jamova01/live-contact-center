@@ -40,7 +40,7 @@ export default function ClientsPage() {
       });
     }, 7000);
     return () => clearInterval(interval);
-  }, [clients, fetchClients]);
+  }, [clients, fetchClients, setClients]);
 
   if (isLoadingClients) {
     return <div>Loading clients...</div>;
