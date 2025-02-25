@@ -7,15 +7,35 @@ import { List } from "@/components/organisms/List";
 import { AgentCard } from "@/components/molecules/AgentCard";
 import { useStore } from "@/store/useStore";
 import { Agent } from "@/types/types";
+import { socket } from "@/services/socket";
 
 export default function AgentsPage() {
-  const { agents, isLoadingAgents, errorAgents, fetchAgents } = useStore();
+  const {
+    agents,
+    isLoadingAgents,
+    errorAgents,
+    fetchAgents,
+    updateAgentStatus,
+  } = useStore();
 
   useEffect(() => {
     if (agents.length === 0) {
       fetchAgents();
     }
-  }, [agents, fetchAgents]);
+
+    const interval = setInterval(() => {
+      if (agents.length === 0) return;
+
+      const randomAgent = agents[Math.floor(Math.random() * agents.length)];
+      const statuses = ["available", "on call", "paused"] as const; // <- 'as const' convierte esto en una tupla de valores literales
+      const newStatus = statuses[Math.floor(Math.random() * statuses.length)]; // TypeScript infiere correctamente el tipo
+
+      updateAgentStatus(randomAgent.id, newStatus);
+      socket.emit("updateAgentStatus", randomAgent.id, newStatus);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [agents, updateAgentStatus, fetchAgents]);
 
   if (isLoadingAgents) {
     return <div>Loading agents...</div>;
@@ -41,7 +61,7 @@ function AgentsContent({ agents }: AgentsContentProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const statusFilter = searchParams.get("status") || "";
+  const statusFilter = searchParams?.get("status") || "";
 
   const filteredAgents = useMemo(() => {
     return statusFilter
@@ -51,7 +71,7 @@ function AgentsContent({ agents }: AgentsContentProps) {
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = event.target.value;
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams ?? "");
     if (newStatus) {
       params.set("status", newStatus);
     } else {
