@@ -2,20 +2,28 @@
 
 ## Project Overview
 
-This project is a web application built with Next.js, Zustand for state management, and API routes to manage agents and clients. It provides filtering functionality, real-time data updates, and a simple UI for managing agents and clients.
+This project is a web application built with **Next.js** for a contact center, designed to display and manage information about agents and clients in real time. It interacts with a **.NET backend** via a RESTful API and utilizes **WebSockets** for live updates.
+
+The application implements:
+
+- **Zustand** for global state management.
+- **Query parameters** for filtering agents by status and clients by wait time.
+- **Atomic Design** methodology for structuring reusable UI components.
 
 ## Features
 
-- Display a list of agents and clients.
-- Filter agents based on their status.
-- Fetch agents and clients from the API.
-- Update agent status and client wait times.
-- Zustand-based global state management.
+- Display a list of **agents** with name, status, and wait time.
+- Display a list of **clients** with name and wait time.
+- **Filter agents** by status (available, on call, on break, etc.).
+- **Filter clients** by wait time.
+- **Real-time updates** using WebSockets for changes in agent statuses and client queue movements.
+- **Global state management** using Zustand for efficient state handling.
+- **Next.js App Router** with **Loading UI and Streaming** for optimized rendering.
 
 ## Deployment
 
 You can access the live application at the following link:
-🔗 Live Demo: https://live-contact-center.netlify.app/
+🔗 **Live Demo**: [https://live-contact-center.netlify.app/](https://live-contact-center.netlify.app/)
 
 ## Installation
 
@@ -28,8 +36,8 @@ You can access the live application at the following link:
 
 1. Clone the repository:
    ```sh
-   git clone <repository_url>
-   cd <repository_name>
+   git clone  https://github.com/Jamova01/live-contact-center
+   cd live-contact-center
    ```
 2. Install dependencies:
    ```sh
@@ -59,6 +67,7 @@ src/
   │   │   ├── clients/
   │   │   │   ├── route.ts
   ├── components/
+  │   ├── atoms/
   │   ├── molecules/
   │   │   ├── AgentCard.tsx
   │   ├── organisms/
@@ -68,6 +77,8 @@ src/
   ├── services/
   │   ├── fetchAgents.ts
   │   ├── fetchClients.ts
+  ├── utils/
+  │   ├── websocket.ts
 ```
 
 ## API Endpoints
@@ -98,13 +109,36 @@ Returns a list of available clients.
 ]
 ```
 
+## WebSocket Implementation
+
+WebSockets are used to dynamically update the UI when:
+
+- An agent changes status (e.g., from available to on call).
+- A new client enters or leaves the queue.
+
 ## Technologies Used
 
-- **Next.js** - Framework for React applications
-- **Zustand** - State management
-- **Tailwind CSS** - Styling
-- **TypeScript** - Type safety
+- **Next.js** - React framework with SSR and App Router.
+- **Zustand** - Lightweight global state management.
+- **WebSockets** - Real-time updates for agent and client changes.
+- **Tailwind CSS** - Styling and responsive design.
+- **TypeScript** - Type safety and maintainability.
+- **Atomic Design** - Component-based UI architecture.
 
-## License
+## Explanation of Development Decisions
 
-This project is licensed under the MIT License.
+### 1. **Component Architecture (Atomic Design)**
+
+- **Atoms:** Basic UI elements (buttons, inputs, status badges).
+- **Molecules:** Combinations of atoms, such as `AgentCard`.
+- **Organisms:** More complex UI sections, such as `List`.
+
+### 2. **State Management (Zustand)**
+
+- Zustand is used to handle **real-time updates efficiently** without unnecessary re-renders.
+- The store keeps the lists of agents and clients in sync with API calls and WebSocket messages.
+
+### 3. **Filtering with Query Params**
+
+- Query parameters in URLs are used for filtering agents by status and clients by wait time.
+- This approach allows for direct linking to filtered views.
