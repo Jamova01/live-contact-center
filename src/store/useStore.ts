@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { Agent, Client } from "@/types/types";
+import { socket } from "@/services/socket";
 import { getAgents } from "@/services/fetchAgents";
 import { getClients } from "@/services/fetchClients";
-import { socket } from "@/services/socket";
 
 type StoreState = {
   agents: Agent[];
