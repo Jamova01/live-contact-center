@@ -36,7 +36,7 @@ You can access the live application at the following link:
 
 1. Clone the repository:
    ```sh
-   git clone  https://github.com/Jamova01/live-contact-center
+   git clone https://github.com/Jamova01/live-contact-center
    cd live-contact-center
    ```
 2. Install dependencies:
@@ -57,6 +57,8 @@ You can access the live application at the following link:
 ```
 src/
   ├── app/
+  │   ├── layout.tsx
+  │   ├── globals.css
   │   ├── (agents)/
   │   │   ├── page.tsx
   │   ├── (clients)/
@@ -68,17 +70,29 @@ src/
   │   │   │   ├── route.ts
   ├── components/
   │   ├── atoms/
+  │   │   ├── Avatar/
+  │   │       ├── index.tsx
   │   ├── molecules/
-  │   │   ├── AgentCard.tsx
+  │   │   ├── AgentCard/
+  │   │   │   ├── index.tsx
+  │   │   ├── ClientCard/
+  │   │   │   ├── index.tsx
+  │   │   ├── NavLinks/
+  │   │   │   ├── index.tsx
   │   ├── organisms/
-  │   │   ├── List.tsx
-  ├── store/
-  │   ├── useStore.ts
+  │   │   ├── List/
+  │   │       ├── index.tsx
+  ├── pages/
+  │   ├── api/
+  │   │   ├── socket.ts
   ├── services/
+  │   ├── socket.ts
   │   ├── fetchAgents.ts
   │   ├── fetchClients.ts
-  ├── utils/
-  │   ├── websocket.ts
+  ├── store/
+  │   ├── useStore.ts
+  ├── types/
+  │   ├── types.ts
 ```
 
 ## API Endpoints
@@ -129,8 +143,8 @@ WebSockets are used to dynamically update the UI when:
 
 ### 1. **Component Architecture (Atomic Design)**
 
-- **Atoms:** Basic UI elements (buttons, inputs, status badges).
-- **Molecules:** Combinations of atoms, such as `AgentCard`.
+- **Atoms:** Basic UI elements (buttons, inputs, status badges, avatars).
+- **Molecules:** Combinations of atoms, such as `AgentCard`, `ClientCard`, and `NavLinks`.
 - **Organisms:** More complex UI sections, such as `List`.
 
 ### 2. **State Management (Zustand)**
