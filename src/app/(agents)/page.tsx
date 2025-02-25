@@ -27,8 +27,8 @@ export default function AgentsPage() {
       if (agents.length === 0) return;
 
       const randomAgent = agents[Math.floor(Math.random() * agents.length)];
-      const statuses = ["available", "on call", "paused"] as const; // <- 'as const' convierte esto en una tupla de valores literales
-      const newStatus = statuses[Math.floor(Math.random() * statuses.length)]; // TypeScript infiere correctamente el tipo
+      const statuses = ["available", "on call", "paused"] as const;
+      const newStatus = statuses[Math.floor(Math.random() * statuses.length)];
 
       updateAgentStatus(randomAgent.id, newStatus);
       socket.emit("updateAgentStatus", randomAgent.id, newStatus);
