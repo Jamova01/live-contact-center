@@ -7,14 +7,39 @@ import { List } from "@/components/organisms/List";
 import { ClientCard } from "@/components/molecules/ClientCard";
 import { useStore } from "@/store/useStore";
 import { Client } from "@/types/types";
+import { socket } from "@/services/socket";
 
 export default function ClientsPage() {
-  const { clients, isLoadingClients, errorClients, fetchClients } = useStore();
+  const { clients, isLoadingClients, errorClients, fetchClients, setClients } =
+    useStore();
 
   useEffect(() => {
     if (clients.length === 0) {
       fetchClients();
     }
+
+    const interval = setInterval(() => {
+      const action = Math.random() > 0.5 ? "add" : "remove";
+      setClients((prevClients) => {
+        let updatedClients;
+        if (action === "add") {
+          const newClient = {
+            id: Date.now(),
+            name: `Cliente ${Date.now()}`,
+            waitTime: Math.floor(Math.random() * 10) + 1,
+          };
+          updatedClients = [...prevClients, newClient];
+          socket.emit("addClient", newClient);
+        } else if (prevClients.length > 0) {
+          updatedClients = prevClients.slice(1);
+          socket.emit("removeClient", prevClients[0].id);
+        } else {
+          return prevClients;
+        }
+        return updatedClients;
+      });
+    }, 7000);
+    return () => clearInterval(interval);
   }, [clients, fetchClients]);
 
   if (isLoadingClients) {
@@ -41,7 +66,7 @@ function ClientsContent({ clients }: ClientsContentProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const waitTimeFilter = searchParams.get("waitTime") || "";
+  const waitTimeFilter = searchParams?.get("waitTime") || "";
 
   const filteredClients = useMemo(() => {
     return waitTimeFilter
@@ -53,7 +78,7 @@ function ClientsContent({ clients }: ClientsContentProps) {
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newWaitTime = event.target.value;
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams ?? "");
     if (newWaitTime) {
       params.set("waitTime", newWaitTime);
     } else {
